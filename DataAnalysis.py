@@ -467,3 +467,112 @@ for i, age_group in enumerate(age_groups):
 
 # Show the three graphs
 plt.show()
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the data from the CSV file
+df = pd.read_csv("population.csv")
+
+# Filter the data for the year 2017
+population_2017 = df[df['Year'] == 2017]
+
+# Group the data by 'District.Name' and 'Gender' and sum the 'Number' column
+district_gender_population = population_2017.groupby(['District.Name', 'Gender'])['Number'].sum().unstack().reset_index()
+
+# Create a segmented stack bar graph
+plt.figure(figsize=(12, 8))
+plt.bar(district_gender_population['District.Name'], district_gender_population['Male'], label='Male')
+plt.bar(district_gender_population['District.Name'], district_gender_population['Female'], bottom=district_gender_population['Male'], label='Female')
+plt.xlabel('District Name')
+plt.ylabel('Population')
+plt.title('Population per District in 2017 by Gender')
+plt.xticks(rotation=45)
+plt.legend()
+plt.tight_layout()
+
+# Show the plot
+plt.show()
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load your CSV data into a Pandas DataFrame
+# Replace 'your_file.csv' with the actual filename
+df = pd.read_csv('population.csv')
+
+# Create a new column 'Age Group' to categorize the ages
+def categorize_age(age):
+    try:
+        age_int = int(age.split('-')[0])
+        if age_int <= 10:
+            return '0-10'
+        elif age_int <= 60:
+            return '10-60'
+        else:
+            return '60-90'
+    except ValueError:
+        return age
+
+df['Age Group'] = df['Age'].apply(categorize_age)
+
+# Pivot the DataFrame to create columns for each age group (0-10, 10-60, 60-90)
+df_pivot = df.pivot_table(index=['Year', 'District.Name'], columns='Age Group', values='Number', aggfunc='sum', fill_value=0)
+
+# Reset the index to make 'Year' and 'District.Name' regular columns
+df_pivot = df_pivot.reset_index()
+
+# Rename the columns to make them more descriptive
+df_pivot.columns.name = None
+
+# Get a list of unique districts
+districts = df_pivot['District.Name'].unique()
+
+# Define a custom color palette for each age group
+custom_colors = {
+    '0-10': 'b',
+    '10-60': 'g',
+    '60-90': 'r'
+}
+
+# Create a segmented stacked bar chart for each district
+for district in districts:
+    district_data = df_pivot[df_pivot['District.Name'] == district]
+
+    # Extract the years and population data for the age groups
+    years = district_data['Year']
+    age_0_10 = district_data['0-10']
+    age_10_60 = district_data['10-60']
+    age_60_90 = district_data['60-90']
+
+    # Set the width of the bars
+    bar_width = 0.35
+
+    # Set the positions for the bars
+    positions = range(len(years))
+
+    # Create the segmented stacked bar chart
+    plt.figure(figsize=(12, 6))
+    plt.bar(positions, age_0_10, width=bar_width, label='0-10', color=custom_colors['0-10'])
+    plt.bar(positions, age_10_60, width=bar_width, label='10-60', color=custom_colors['10-60'], bottom=age_0_10)
+    plt.bar(positions, age_60_90, width=bar_width, label='60-90', color=custom_colors['60-90'], bottom=age_0_10 + age_10_60)
+
+    plt.xlabel('Year')
+    plt.ylabel('Population')
+    plt.title(f'Population Distribution by Age Group in {district}')
+    plt.xticks(positions, years)
+    plt.legend(title='Age Group', loc='upper right')
+
+    plt.tight_layout()
+
+    # Show the segmented stacked bar chart for the current district
+    plt.show()
+
+"""Avoid Errors for Above works fine!
+
+##Unemployment
+"""
+
+
+
+
