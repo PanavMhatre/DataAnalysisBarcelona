@@ -697,4 +697,30 @@ plt.tight_layout()
 plt.show()
 
 
+"""##Accidents"""
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the data from the CSV file
+df = pd.read_csv("accidents_2017.csv")
+
+# Filter out rows where 'District Name' is not 'Unknown'
+df = df[df['District Name'] != 'Unknown']
+
+# Group the data by 'District Name' and count the number of accidents
+district_data = df.groupby('District Name')['Id'].count().reset_index()
+
+# Create a bar graph
+plt.figure(figsize=(12, 8))
+plt.bar(district_data['District Name'], district_data['Id'])
+plt.xlabel('District Name')
+plt.ylabel('Number of Accidents')
+plt.title('Number of Accidents per District')
+plt.xticks(rotation=45)
+plt.tight_layout()
+
+# Show the plot
+plt.show()
+
 
