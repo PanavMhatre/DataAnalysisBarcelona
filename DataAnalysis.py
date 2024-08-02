@@ -82,3 +82,39 @@ plt.xticks(rotation=45, ha='right')
 plt.legend()
 plt.tight_layout()
 plt.show()
+
+"""##Immigrants by Nationality"""
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Read the CSV file into a Pandas DataFrame
+df = pd.read_csv('immigrants_by_nationality.csv')
+
+# Exclude the rows where Nationality is 'Spain'
+df_filtered = df[df['Nationality'] != 'Spain']
+
+# Group the data by nationality and sum the number of immigrants over the years
+nationality_counts = df_filtered.groupby('Nationality')['Number'].sum()
+
+# Sort the nationalities by the total number of immigrants in descending order
+top_nationalities = nationality_counts.sort_values(ascending=False).head(20)
+
+# Create a bar plot
+plt.figure(figsize=(12, 6))
+top_nationalities.plot(kind='bar')
+plt.xlabel('Nationality')
+plt.ylabel('Total Number of Immigrants')
+plt.title('Top 20 Immigrant Nationalities (Excluding Spain) Over the Years')
+plt.xticks(rotation=90)
+plt.show()
+
+df = pd.read_csv('immigrants_by_nationality.csv')
+
+# Group the data by 'Year', 'District Name', and 'Nationality', and sum the 'Number' column
+result = df.groupby(['Year', 'District Name', 'Nationality'])['Number'].sum().reset_index()
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
+# Print the resulting DataFrame
+print(result['Nationality'].unique())
+
