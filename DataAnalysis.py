@@ -365,3 +365,105 @@ districts = result['District Name'].unique()
 
 # Define a color palette for the lines
 colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'purple', 'orange', 'lime', 'pink', 'brown', 'gray', 'olive', 'teal']   
+
+
+# Loop through each district, assigning a color, and plot a line with data points (dots)
+for i, district in enumerate(districts):
+    # Filter the data for the current district
+    district_data = result[result['District Name'] == district]
+
+    # Extract the years and net immigrants counts
+    years = district_data['Year']
+    net_immigrants = district_data['Net Immigrants']
+
+    # Plot the net immigrants for the current district with data points (dots)
+    ax.plot(years, net_immigrants, marker='o', linestyle='-', label=f'{district} Net Immigrants', color=colors[i])
+
+# Set labels and title for the graph
+ax.set_xlabel('Year')
+ax.set_ylabel('Net Immigrants Count')
+ax.set_title('Net Immigrants Over Time by District')
+
+# Add gridlines for better readability
+ax.grid(False)
+
+# Adjust the legend placement to not overlap with the lines
+ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
+
+# Set x-axis ticks as whole integers
+ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+
+# Show the graph
+plt.tight_layout()
+plt.show()
+
+"""##Population"""
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load your CSV data into a Pandas DataFrame
+# Replace 'your_file.csv' with the actual filename
+df = pd.read_csv('population.csv')
+
+# Create a new column 'Age Group' to categorize the ages
+def categorize_age(age):
+    try:
+        age_int = int(age.split('-')[0])
+        if age_int <= 10:
+            return '0-10'
+        elif age_int <= 60:
+            return '10-60'
+        else:
+            return '60-90'
+    except ValueError:
+        return age
+
+df['Age Group'] = df['Age'].apply(categorize_age)
+
+# Pivot the DataFrame to create columns for each age group (0-10, 10-60, 60-90)
+df_pivot = df.pivot_table(index=['Year', 'District.Name'], columns='Age Group', values='Number', aggfunc='sum', fill_value=0)
+
+# Reset the index to make 'Year' and 'District.Name' regular columns
+df_pivot = df_pivot.reset_index()
+
+# Rename the columns to make them more descriptive
+df_pivot.columns.name = None
+
+# Get a list of unique districts
+districts = df_pivot['District.Name'].unique()
+
+# Define a custom color palette
+custom_colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'purple', 'orange', 'lime', 'pink', 'brown', 'gray', 'olive', 'teal']
+
+# Create a total of three graphs
+age_groups = ['0-10', '10-60', '60-90']
+for i, age_group in enumerate(age_groups):
+    fig, axs = plt.subplots(figsize=(12, 6))
+
+    # Loop through each district and plot a line for the current age group
+    for j, district in enumerate(districts):
+        district_data = df_pivot[df_pivot['District.Name'] == district]
+
+        # Extract the years and population data for the current age group
+        years = district_data['Year']
+        population_data = district_data[age_group]
+
+        # Use a custom color from the palette
+        color = custom_colors[j % len(custom_colors)]
+
+        axs.plot(years, population_data, label=f'{district}', marker='o', color=color)
+
+    axs.set_xlabel('Year')
+    axs.set_ylabel('Population')
+    axs.set_title(f'Population in Age Group {age_group}')
+
+    # Set x-axis ticks as whole integers
+    axs.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+
+    axs.legend()
+
+    plt.tight_layout()
+
+# Show the three graphs
+plt.show()
