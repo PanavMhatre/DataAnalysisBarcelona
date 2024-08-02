@@ -22,3 +22,63 @@ air_quality_mapping = {"Good": 1, "Moderate": 2}
 df['Air Quality'] = df['Air Quality'].map(air_quality_mapping)
 average_air_quality = df.groupby('Year')['Air Quality'].mean().reset_index()
 print(average_air_quality)
+
+
+
+"""##Bus Stops"""
+
+# Load your CSV data into a Pandas DataFrame
+# Replace 'your_file.csv' with the actual filename
+df = pd.read_csv('bus_stops.csv')
+
+# Create a new column 'Day Bus Stops' with 0 as the initial value
+df['Day Bus Stops'] = 0
+
+# Create a new column 'Night Bus Stops' with 0 as the initial value
+df['Night Bus Stops'] = 0
+
+# Update the 'Day Bus Stops' column based on the 'Transport' column
+df.loc[df['Transport'] == 'Day bus stop', 'Day Bus Stops'] = 1
+
+# Update the 'Night Bus Stops' column based on the 'Transport' column
+df.loc[df['Transport'] == 'Night bus stop', 'Night Bus Stops'] = 1
+
+# Group by 'District.Name' and sum the 'Day Bus Stops' and 'Night Bus Stops'
+result = df.groupby('District.Name')[['Day Bus Stops', 'Night Bus Stops']].sum().reset_index()
+
+# Print the resulting DataFrame
+print(result)
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load your CSV data into a Pandas DataFrame
+# Replace 'your_file.csv' with the actual filename
+df = pd.read_csv('bus_stops.csv')
+
+# Create a new column 'Day Bus Stops' with 0 as the initial value
+df['Day Bus Stops'] = 0
+
+# Create a new column 'Night Bus Stops' with 0 as the initial value
+df['Night Bus Stops'] = 0
+
+# Update the 'Day Bus Stops' column based on the 'Transport' column
+df.loc[df['Transport'] == 'Day bus stop', 'Day Bus Stops'] = 1
+
+# Update the 'Night Bus Stops' column based on the 'Transport' column
+df.loc[df['Transport'] == 'Night bus stop', 'Night Bus Stops'] = 1
+
+# Group by 'District.Name' and sum the 'Day Bus Stops' and 'Night Bus Stops'
+result = df.groupby('District.Name')[['Day Bus Stops', 'Night Bus Stops']].sum().reset_index()
+
+# Plot the data
+plt.figure(figsize=(12, 6))
+plt.bar(result['District.Name'], result['Day Bus Stops'], label='Day Bus Stops')
+plt.bar(result['District.Name'], result['Night Bus Stops'], label='Night Bus Stops', bottom=result['Day Bus Stops'])
+plt.xlabel('District Name')
+plt.ylabel('Number of Bus Stops')
+plt.title('Number of Day and Night Bus Stops per District')
+plt.xticks(rotation=45, ha='right')
+plt.legend()
+plt.tight_layout()
+plt.show()
