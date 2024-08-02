@@ -665,5 +665,36 @@ plt.legend(title='Transport Type')
 # Show the graph
 plt.show()
 
+"""##Births"""
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the data from the CSV file
+df = pd.read_csv("births.csv")
+
+# Filter out rows where 'District Name' is not 'No consta'
+df = df[df['District Name'] != 'No consta']
+
+# Group the data by 'Year' and 'District Name' and sum the 'Number' column
+district_data = df.groupby(['Year', 'District Name'])['Number'].sum().unstack()
+
+# Create a line graph with multiple lines (one for each district)
+plt.figure(figsize=(12, 8))
+
+for district in district_data.columns:
+    plt.plot(district_data.index, district_data[district], label=district)
+
+plt.xlabel('Year')
+plt.ylabel('Total Number')
+plt.title('Total Number of Births per Year (All Districts)')
+plt.legend()
+plt.grid(True)
+plt.xticks(district_data.index.astype(int))  # Set x-axis ticks to integers
+plt.tight_layout()
+
+# Show the plot
+plt.show()
+
 
 
