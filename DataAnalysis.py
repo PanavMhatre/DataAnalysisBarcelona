@@ -629,5 +629,41 @@ plt.legend()  # Add a legend to distinguish districts
 plt.tight_layout()
 plt.show()
 
+"""##Transport"""
+
+import pandas as pd
+
+# Load your CSV data into a Pandas DataFrame
+# Replace 'your_file.csv' with the actual filename
+df = pd.read_csv('transports.csv')
+
+# Group the data by 'District Name' and 'Transport' and count the occurrences
+transport_count = df.groupby('District.Name')['Transport'].count().reset_index()
+
+# Print the resulting DataFrame
+print(transport_count)
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+custom_colors = ['b', 'g', 'r', 'c', 'y', 'k', 'purple', 'orange', 'lime', 'brown', 'gray', 'olive', 'teal']
+
+# Load your CSV data into a Pandas DataFrame
+# Replace 'your_file.csv' with the actual filename
+df = pd.read_csv('transports.csv')
+
+# Group the data by 'District Name' and 'Transport' and count the occurrences
+transport_count = df.groupby(['District.Name', 'Transport']).size().unstack(fill_value=0)
+
+# Plot the segmented bar graph with custom colors
+transport_count.plot(kind='bar', stacked=True, figsize=(10, 6), color=custom_colors)
+plt.title('Transport Type by District')
+plt.xlabel('District Name')
+plt.ylabel('Count')
+plt.legend(title='Transport Type')
+
+# Show the graph
+plt.show()
+
 
 
